@@ -23,7 +23,7 @@ loading_text = font.render("Loading...", True, pygame.Color('white'))
 screen.blit(loading_text, (s_width/2 - loading_text.get_width()/2,
 s_height/2 - loading_text.get_height()/2))
 
-# Create the loading bar
+
 b_width, b_height = 500, 50
 outline_rect = pygame.Rect(s_width/2 - b_width/2, s_height/2 + loading_text.get_height(), b_width, b_height)
 filled_rect = pygame.Rect(s_width/2 - b_width/2, s_height/2 + loading_text.get_height(), 0, b_height)
@@ -36,7 +36,6 @@ while loading:
       pygame.quit()
 
   if (pygame.time.get_ticks() - ticks) < 3000:
-    # Update the width of the filled part of the loading bar
     filled_rect.width = ((pygame.time.get_ticks() - ticks) / 3000) * b_width
   else:
     loading = False
@@ -128,7 +127,7 @@ exit_button = Button(1500, 825, 300, 50, 'Return to Mode Selection')
 stop_button.color = pygame.Color('red')
 start_button.color = pygame.Color('green')
 exit_button.color = pygame.Color('Black')
-# Add a variable to track the paused state
+
 simulation_paused = False
 
 # Define a function to draw the output label and values
@@ -184,7 +183,6 @@ start_point = []
 font = pygame.font.Font(None, 30)
 
 equation_surface = [font.render(equation, True, pygame.Color('white')) for equation in equations]
-# Draw the equations on the screen
 for i, equation_surface in enumerate(equation_surface):
     screen.blit(equation_surface, (o_box.x , o_box.y  ))
 
@@ -258,7 +256,6 @@ while running:
                   active_box = i
                   break
           if exit_button.is_clicked(event.pos):
-            # Exit the program
             exec(open("menu.py").read())
       elif event.type == pygame.KEYDOWN:
           if active_box is not None:
@@ -299,7 +296,7 @@ while running:
   target_x = proj_initial_pos[0] + target_distance  # Calculate the x-coordinate based on the distance from the circle
   pygame.draw.line(screen, target_color, (target_x, target_y), (target_x + target_width, target_y), 2)
 
-  # Only update the projectile's position and path if the simulation is not paused
+
   if proj_running and not simulation_paused:
       time_elapsed += delta_t * playback_speed  # Increment the time elapsed by dt * playback_speed
 
