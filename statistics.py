@@ -1,43 +1,53 @@
 import pygame
-import sys
 
-# Initialize Pygame
 pygame.init()
 
-# Set the dimensions of the window
-screen_width, screen_height = 1920, 1080
-screen = pygame.display.set_mode((screen_width, screen_height))
+s = pygame.display.set_mode((1920,1080))
 
-# Set the window title
-pygame.display.set_caption("Statistics")
+bg = pygame.image.load("images/optionsBg.png")
+bg = pygame.transform.scale(bg, (1920, 1080))
 
-# Create a font object
+box_color = (255, 255, 255)  
+box_width = 400  
+box_height = 600  
+box_y = 1080 // 2 - box_height // 2  # Y position (center of the screen)
+
+
 font = pygame.font.Font(None, 50)
+title_colour = (255, 255, 255)  
+text_colour = (0,0,0) 
 
-# Render the text
-text_surface = font.render("Statistics menu", True, (255, 255, 255))
+titles = ["Total Attempts", "Successful Attempts", "Success Rate"]
 
-# Get the rectangle of the text surface
-text_rect = text_surface.get_rect()
 
-# Center the rectangle
-text_rect.center = (screen_width / 2, screen_height / 2)
+first_heading = "Your Statistics!"
+first_font = pygame.font.Font("fonts/Dungeon Depths.otf", 50)  
+first_surface = first_font.render(first_heading, True, title_colour)
+first_x = 1920 // 2 - first_surface.get_width() // 2   
+first_y = box_y // 2 - first_surface.get_height() // 2  
 
-# Game loop
+ 
 running = True
 while running:
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
-			running = False
+    # Fill the screen with the background image
+    s.blit(bg, (0, 0))
 
-	# Fill the screen with black
-	screen.fill((0, 0, 0))
+   
+    s.blit(first_surface, (first_x, first_y))
 
-	# Blit the text onto the screen
-	screen.blit(text_surface, text_rect)
+    for i, title in enumerate(titles):
+        box_x = 1920 // 3 * i + 1920 // 6 - box_width // 2
+        pygame.draw.rect(s, box_color, pygame.Rect(box_x, box_y, box_width, box_height))
+        title_surface = font.render(title, True , text_colour)
+        title_x = box_x + (box_width - title_surface.get_width()) // 2
+        title_y = box_y  # The title is at the top of the box
+        s.blit(title_surface, (title_x, title_y))
 
-	# Update the display
-	pygame.display.flip()
+    pygame.display.flip()
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
 
 pygame.quit()
-sys.exit()
+
