@@ -1,32 +1,31 @@
 import pygame
 import sys
 import math
+import sqlite3
+from login_page import Database
+
 
 # Initialize Pygame
 pygame.init()
 font = pygame.font.Font(None, 30)
+font_loading = pygame.font.Font(None, 50)
 
-s_width, s_height = 1920, 1080
-screen = pygame.display.set_mode((s_width, s_height))#
+screen = pygame.display.set_mode((1920, 1080))
 pygame.display.set_caption("Interactive Game")
 
-s_width, s_height = 1920, 1080
-screen = pygame.display.set_mode((s_width, s_height))
+bg = pygame.image.load("images/InGameScreen.png")
+bg = pygame.transform.scale(bg, (1920, 1080))
 
-bg_image_path = "images/InGameScreen.png"
-bg = pygame.image.load(bg_image_path)
-bg = pygame.transform.scale(bg, (s_width, s_height))
+def hash_password(password):
+  return hashlib.sha256(password.encode()).hexdigest()
 
-font = pygame.font.Font(None, 50)
-loading_text = font.render("Loading...", True, pygame.Color('white'))
+loading_text = font_loading.render("Loading...", True, pygame.Color('white'))
 
-screen.blit(loading_text, (s_width/2 - loading_text.get_width()/2,
-s_height/2 - loading_text.get_height()/2))
+screen.blit(loading_text, (1920/2 - loading_text.get_width()/2,
+1080/2 - loading_text.get_height()/2))
 
-
-b_width, b_height = 500, 50
-outline_rect = pygame.Rect(s_width/2 - b_width/2, s_height/2 + loading_text.get_height(), b_width, b_height)
-filled_rect = pygame.Rect(s_width/2 - b_width/2, s_height/2 + loading_text.get_height(), 0, b_height)
+outline_rect = pygame.Rect(710, 540 + loading_text.get_height(), 500, 50)
+filled_rect = pygame.Rect(710, 540 + loading_text.get_height(), 0, 50)
 
 loading = True
 ticks = pygame.time.get_ticks()
@@ -36,7 +35,7 @@ while loading:
       pygame.quit()
 
   if (pygame.time.get_ticks() - ticks) < 3000:
-    filled_rect.width = ((pygame.time.get_ticks() - ticks) / 3000) * b_width
+    filled_rect.width = ((pygame.time.get_ticks() - ticks) / 3000) * 500
   else:
     loading = False
 
@@ -45,41 +44,32 @@ while loading:
 
   pygame.display.flip()
 
-# Define the input box properties
 
-input_box_color = pygame.Color('white')
-box_width, box_height = 200, 60
-box_spacing = 20
-info_box_width, info_box_height = 480, 250
-# Define the positions of the input boxes
+box_colour = pygame.Color('white')
+box_margin = 20
+box_width = 200
+box_height = 60
 input = [
-    pygame.Rect(220, 20, box_width, box_height),  # Gravity
-    pygame.Rect(220, 150, box_width, box_height),  # Distance of Target
-    pygame.Rect(610, 20, box_width, box_height),  # Initial Velocity
-    pygame.Rect(610, 150, box_width, box_height),
-    pygame.Rect(1440, 530, info_box_width, info_box_height)
+    pygame.Rect(220, 20, 200, 60),  
+    pygame.Rect(220, 150, 200, 60),  
+    pygame.Rect(610, 20, 200, 60), 
+    pygame.Rect(610, 150, 200, 60),
+    pygame.Rect(1440, 530, 480, 250)
 ]
 
-# Create a font object for the label and input text
-font = pygame.font.Font(None, 36)
-
-# Define the label
 label = ["Gravity", "Distance of Target", "Initial Velocity", "Angle",""]
 
-# Define the output label and their initial values
-output = ["Acceleration (y)", "Displacement", "Time Taken", "Current Velocity"]
-scientific_output = [9.81, 0, 0, 30]  # Default values for gravity, displacement, time, and initial velocity
 
+output = ["Acceleration (y)", "Displacement", "Time Taken", "Current Velocity"]
+scientific_output = [9.81, 0, 0, 30] 
 
 proj_radius = 7.5
 projectile_color = pygame.Color('black')
 
 proj_initial_pos = [220, 780]
 
-# List to store the positions of the projectile for the tracer
 projectile_movement = []
 
-# Define the target line properties
 target_width = 70
 target_color = pygame.Color('black')
 target_y = 780  
@@ -127,19 +117,19 @@ exit_button = Button(1500, 825, 300, 50, 'Return to Mode Selection')
 stop_button.color = pygame.Color('red')
 start_button.color = pygame.Color('green')
 exit_button.color = pygame.Color('Black')
-
+# Add a variable to track the paused state
 simulation_paused = False
 
 # Define a function to draw the output label and values
-def draw_scientific_output(screen, font, output, scientific_output, input, box_spacing, box_width, box_height):
+def draw_scientific_output(screen, font, output, scientific_output, input, box_margin, box_width, box_height):
     for i, label in enumerate(output):
         label_surface = font.render(label, True, pygame.Color('white'))
         value_surface = font.render(f"{scientific_output[i]:.2f}", True, pygame.Color('black'))
         # Calculate the x position based on the last input box's position and spacing
-        label_x = input[-1].right + box_spacing + (i * (box_width + box_spacing))-900
+        label_x = input[-1].right + 20 + (i * (200 + 20))-900
         # Draw the label and value on the screen
         screen.blit(label_surface, (label_x, 20))
-        screen.blit(value_surface, (label_x, 20 + box_height + box_spacing))
+        screen.blit(value_surface, (label_x, 20 + 60 + 20))
 
 playback_speed = 1 
 
@@ -155,9 +145,9 @@ y_pos = 0
 
 # Define the properties of the output box
 o_box_color = pygame.Color('white')
-o_box_width, o_box_height = 550, 540  # You can adjust these values as needed
-o_box = pygame.Rect(1400, 250, o_box_width, o_box_height)  
-o_surface = pygame.Surface((o_box_width, o_box_height))  # Create a surface for the output box
+o_200, o_60 = 550, 540  # You can adjust these values as needed
+o_box = pygame.Rect(1400, 250, o_200, o_60)  
+o_surface = pygame.Surface((o_200, o_60))  # Create a surface for the output box
 o_surface.fill(o_box_color)  # Fill the surface with the output box color
 screen.blit(o_surface, (o_box.x, o_box.y)) 
 
@@ -180,7 +170,8 @@ equations = [
     "Time: t = (v - u) / a",]
 
 start_point = []
-font = pygame.font.Font(None, 30)
+count = 0
+suc_count = 0
 
 equation_surface = [font.render(equation, True, pygame.Color('white')) for equation in equations]
 for i, equation_surface in enumerate(equation_surface):
@@ -200,8 +191,8 @@ while running:
       # Handle the case where the input text is not a valid number
       gravity = 9.81  # Default value or previous valid value
       target_distance = 500  # Default value or previous valid value
-      initial_velocity = 30  # Default value or previous valid value
-      launch_angle = math.radians(45)  # Default value or previous valid value
+      initial_velocity = 30  
+      launch_angle = math.radians(45)  
 
   error_grav = font.render("Gravity must be between 2 and 15", True, pygame.Color('red'))
 
@@ -243,7 +234,7 @@ while running:
                   # Start the projectile's motion only if it's not already in motion
                 if not proj_running:
                     proj_running = True
-                     
+
                     proj_pos = proj_initial_pos.copy()  # Reset the position
                     projectile_movement.clear()
           if stop_button.is_clicked(event.pos):
@@ -256,6 +247,8 @@ while running:
                   active_box = i
                   break
           if exit_button.is_clicked(event.pos):
+            #Exit program
+            
             exec(open("menu.py").read())
       elif event.type == pygame.KEYDOWN:
           if active_box is not None:
@@ -277,9 +270,9 @@ while running:
   stop_button.draw(screen, font)
   exit_button.draw(screen, font)
   for i, box in enumerate(input):
-      pygame.draw.rect(screen, input_box_color, box)
+      pygame.draw.rect(screen, box_colour, box)
       label_surface = font.render(label[i], True, pygame.Color('white'))
-      screen.blit(label_surface, (box.x - label_surface.get_width() - 10, box.y + (box_height - label_surface.get_height()) // 2))
+      screen.blit(label_surface, (box.x - label_surface.get_width() - 10, box.y + (60 - label_surface.get_height()) // 2))
       text_surface = font.render(input_text[i], True, pygame.Color('black'))
       screen.blit(text_surface, (box.x + 5, box.y + 5))
 
@@ -298,45 +291,55 @@ while running:
 
 
   if proj_running and not simulation_paused:
-      time_elapsed += delta_t * playback_speed  # Increment the time elapsed by dt * playback_speed
+    time_elapsed += delta_t * playback_speed  # Increment the time elapsed by dt * playback_speed
 
-      # Calculate the horizontal (x) and vertical (y) position of the projectile
-      x_pos = initial_velocity * math.cos(launch_angle) * time_elapsed
-      y_pos = initial_velocity * math.sin(launch_angle) * time_elapsed - (0.5 * gravity * time_elapsed ** 2)
+    # Calculate the horizontal (x) and vertical (y) position of the projectile
+    x_pos = initial_velocity * math.cos(launch_angle) * time_elapsed
+    y_pos = initial_velocity * math.sin(launch_angle) * time_elapsed - (0.5 * gravity * time_elapsed ** 2)
 
-      # Update the projectile's position
-      proj_pos[0] = proj_initial_pos[0] + x_pos
-      proj_pos[1] = proj_initial_pos[1] - y_pos
+    # Update the projectile's position
+    proj_pos[0] = proj_initial_pos[0] + x_pos
+    proj_pos[1] = proj_initial_pos[1] - y_pos
 
-      # Add the new position to the projectile path for tracing
-      projectile_movement.append((int(proj_pos[0]), int(proj_pos[1])))
+    # Add the new position to the projectile path for tracing
+    projectile_movement.append((int(proj_pos[0]), int(proj_pos[1])))
 
-      # Check if the projectile has reached the ground level or passed the target's x-coordinate
-      if proj_pos[1] >= proj_initial_pos[1]:
-          # Check if the projectile passed within the target's x-coordinate range
-          if target_x <= proj_pos[0] <= target_x + target_width:
-              hit = "Target Hit"
-          else:
-              hit = "Target Missed"
-          proj_running = False
-          time_elapsed = 0
-          proj_pos = proj_initial_pos.copy()
-          projectile_movement.clear()
-
-      elif y_pos >= 515:
-          hit = "Target Missed"
-          proj_running = False
-          time_elapsed = 0
-          proj_pos = proj_initial_pos.copy()
-          projectile_movement.clear()
-
-      elif proj_pos[0] >= 1405:
+      
+    
+    if proj_pos[1] >= proj_initial_pos[1]:
+        # Check if the projectile passed within the target's x-coordinate range
+        if target_x <= proj_pos[0] <= target_x + target_width:
+            hit = "Target Hit"
+            suc_count += 1
+            account.increment_tries(True)
+            
+        else:
+            hit = "Target Missed"
+            account.increment_tries(False)
+        proj_running = False
+        time_elapsed = 0
+        proj_pos = proj_initial_pos.copy()
+        projectile_movement.clear()
+        count += 1
+       
+    
+    elif y_pos >= 515:
         hit = "Target Missed"
         proj_running = False
         time_elapsed = 0
         proj_pos = proj_initial_pos.copy()
         projectile_movement.clear()
-
+        count += 1
+        
+    
+    elif proj_pos[0] >= 1405:
+      hit = "Target Missed"
+      proj_running = False
+      time_elapsed = 0
+      proj_pos = proj_initial_pos.copy()
+      projectile_movement.clear()
+      count += 1
+      
 
   # Draw the projectile on the screen
   pygame.draw.circle(screen, projectile_color, (int(proj_pos[0]), int(proj_pos[1])), proj_radius)
@@ -349,15 +352,15 @@ while running:
   scientific_output[3] = math.sqrt(velocity_x**2 + velocity_y**2)  # Current velocity
 
   # Draw the output label and values every frame
-  draw_scientific_output(screen, font, output, scientific_output, input, box_spacing, box_width, box_height)
+  draw_scientific_output(screen, font, output, scientific_output, input, 20, 200, 60)
 
   # Draw the hit status message if available
   if hit == "Target Missed":
     message_surface = font.render(hit, True, pygame.Color('red'))
-    screen.blit(message_surface, (s_width // 2 - message_surface.get_width() // 2, s_height // 2 - message_surface.get_height() // 2))
+    screen.blit(message_surface, (1920 // 2 - message_surface.get_width() // 2, 1080 // 2 - message_surface.get_height() // 2))
   elif hit == "Target Hit":
     message_surface1 = font.render(hit, True, pygame.Color('green'))
-    screen.blit(message_surface1, (s_width // 2 - message_surface1.get_width() // 2, s_height // 2 - message_surface1.get_height() // 2))
+    screen.blit(message_surface1, (1920 // 2 - message_surface1.get_width() // 2, 1080 // 2 - message_surface1.get_height() // 2))
 
   # Draw the tracer for the projectile
   if len(projectile_movement) > 1:
