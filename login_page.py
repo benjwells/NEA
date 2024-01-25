@@ -56,7 +56,7 @@ login_button = Button(1150, 600, login_image, 500, 120)
 
 class Database:
   def __init__(self, db_name):
-      self.conn = self.create_connection(db_name)
+      self.conn = self.create_connection(db_name) #connects to ther database
       if self.conn is not None:
           self.create_table()
 
@@ -70,32 +70,20 @@ class Database:
           print(e)
       return conn
 
-  def create_table(self):
+  def create_table(self): # creates the table with the new values to be stored
       try:
           sql = '''CREATE TABLE accounts (
               username TEXT NOT NULL,
               password TEXT NOT NULL,
-              total_tries INTEGER DEFAULT 0,
-              successful_tries INTEGER DEFAULT 0,
-              success_rate REAL DEFAULT 0.0
+              total_tries INTEGER DEFAULT 0, #new value 1
+              successful_tries INTEGER DEFAULT 0, #new value 2
+              success_rate REAL DEFAULT 0.0 #new value 3
           );'''
           self.conn.execute(sql)
       except Error as e:
           print(e)
-
-  def update_tries(self, username, success, count):
-      sql = '''UPDATE accounts SET total_tries = ? WHERE username = ?;'''
-      self.conn.execute(sql, (count, username))
-
-      if success:
-          sql = '''UPDATE accounts SET successful_tries = successful_tries + 1 WHERE username = ?;'''
-          self.conn.execute(sql, (username))
-
-      sql = '''UPDATE accounts SET success_rate = successful_tries * 1.0 / total_tries WHERE username = ?;'''
-      self.conn.execute(sql, (username))
-      self.conn.commit()
-
-  def increment_tries(self, success):
+        
+  def increment_tries(self, success): #a function that allows the values to be increased accordingly
     sql = '''SELECT * FROM accounts WHERE username = ?;'''
     cur = self.conn.cursor()
     cur.execute(sql, texts[0])
@@ -113,13 +101,13 @@ class Database:
     self.conn.execute(sql, (record[2],record[3],record[4],texts[0]))
     self.conn.commit()
 
-  def login(self, username, password):
-      if self.check_account_exists((username, password)):
-          print(f"Welcome {username}!")
+  def login(self, username, password): 
+      if self.check_account_exists((username, password)): #checks if the account exists
+          print(f"Welcome {username}!") #used to check whether the function was working when experiencing issues
       else:
           print("Invalid username or password!")
 
-  def create_account(self, account):
+  def create_account(self, account): #function that creates a new account
       username, password = account
       print(password)
       hashed_password = hash_password(password)
@@ -128,14 +116,14 @@ class Database:
       self.conn.execute(sql, (username, hashed_password))
       self.conn.commit()
 
-  def check_username_exists(self, username):
+  def check_username_exists(self, username): #function that checks if the username exists
       sql = '''SELECT * FROM accounts WHERE username = ?'''
       cur = self.conn.cursor()
       cur.execute(sql, (username,))
       rows = cur.fetchall()
       return len(rows) > 0
 
-  def check_account_exists(self, account):
+  def check_account_exists(self, account): #checks whether the account exists and if a new one can be created
       username, password = account
       hashed_password = Database.hash_password(password)
       sql = '''SELECT * FROM accounts WHERE username = ? AND password = ?;'''
@@ -144,11 +132,11 @@ class Database:
       rows = cur.fetchall()
       return len(rows) > 0
 
-  def hash_password(password):
+  def hash_password(password): #hashes the password
     return hashlib.sha256(password.encode()).hexdigest()
 
 
-account = Database('user_accounts.db')
+account = Database('user_accounts.db') # creates the database
 
 
 
