@@ -1,7 +1,7 @@
 import pygame
 import sqlite3
 from sqlite3 import Error
-import hashlib
+import hashlib,os
 
 pygame.init()
 
@@ -131,7 +131,7 @@ class Database:
   def check_username_exists(self, username):
       sql = '''SELECT * FROM accounts WHERE username = ?'''
       cur = self.conn.cursor()
-      cur.execute(sql, (username))
+      cur.execute(sql, (username,))
       rows = cur.fetchall()
       return len(rows) > 0
 
