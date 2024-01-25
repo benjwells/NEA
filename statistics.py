@@ -2,6 +2,7 @@ import pygame
 import sqlite3
 import login_page
 
+
 pygame.init()
 
 s = pygame.display.set_mode((1920,1080))
