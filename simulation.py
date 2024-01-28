@@ -153,26 +153,19 @@ class AirResistance:
       air_resistance = self.calculate_air_resistance()
       velocity_angle = math.atan2(self.velocity_y, self.velocity_x)
 
-      # Split the air resistance into x and y components
+      
       air_resistance_x = air_resistance * math.cos(velocity_angle)
       air_resistance_y = air_resistance * math.sin(velocity_angle)
 
-      # Calculate the acceleration due to air resistance
+   
       acceleration_x = -air_resistance_x / self.mass
       acceleration_y = -air_resistance_y / self.mass
 
-      # Update the velocity
       self.velocity_x += acceleration_x * time_elapsed
       self.velocity_y += acceleration_y * time_elapsed
       print(f"Updated velocities: {self.velocity_x}, {self.velocity_y}")
-      
-
-     
 
   def apply(self, velocity):
-      # The force due to air resistance is proportional to the square of the velocity
-      # and in the opposite direction of the velocity.
-      # We'll return the change in velocity due to this force.
       return -self.drag_coefficient * velocity**2
 
 mass = 1
@@ -376,7 +369,7 @@ while running:
 	  
     
   
-    # Assume the initial velocity is equally split in the x and y directions
+
     initial_velocity_x = initial_velocity / math.sqrt(2)
     initial_velocity_y = initial_velocity / math.sqrt(2)
 
@@ -386,13 +379,13 @@ while running:
         if tickboxes[5].clicked:
           input_text[0] = "9.81"
           air_resistance = AirResistance(mass, 0.5, area, initial_velocity_x, initial_velocity_y, air_density)
-          # Apply air resistance
+     
           air_resistance.update_velocity(time_elapsed)
           x_calibration = air_resistance.apply(initial_velocity * math.cos(launch_angle))
-          # Update the projectile's position
+   
           x_pos = initial_velocity * math.cos(launch_angle) * time_elapsed-((time_elapsed*10))
           y_pos = initial_velocity * math.sin(launch_angle) * time_elapsed - (0.5 * gravity * time_elapsed ** 2)
-          # Update the projectile's position
+     
           proj_pos[0] = proj_initial_pos[0] + x_pos
           proj_pos[1] = proj_initial_pos[1] - y_pos
           
@@ -403,16 +396,16 @@ while running:
             proj_pos = proj_initial_pos.copy()
             projectile_movement.clear()
         else:
-          # Update the projectile's position
+        
           x_pos = initial_velocity * math.cos(launch_angle) * time_elapsed
           y_pos = initial_velocity * math.sin(launch_angle) * time_elapsed - (0.5 * gravity * time_elapsed ** 2)
-          # Update the projectile's position
+    
           proj_pos[0] = proj_initial_pos[0] + x_pos
           proj_pos[1] = proj_initial_pos[1] - y_pos
-          # Add the new position to the projectile path for tracing
+       
         projectile_movement.append((int(proj_pos[0]), int(proj_pos[1])))
           
-      # Check if the projectile has reached the ground level or passed the target's x-coordinate
+  
     if proj_pos[1] >= proj_initial_pos[1]: 
       proj_running = False
       
