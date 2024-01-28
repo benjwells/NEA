@@ -307,7 +307,6 @@ while running:
       
     
     if proj_pos[1] >= proj_initial_pos[1]:
-        # Check if the projectile passed within the target's x-coordinate range
         if target_x <= proj_pos[0] <= target_x + target_width:
             hit = "Target Hit"
             suc_count += 1
