@@ -11,7 +11,7 @@ bg = pygame.image.load("images/optionsBg.png")
 bg = pygame.transform.scale(bg, (1920, 1080))
 
 font_loading = pygame.font.Font(None, 50)
-loading_text = font_loading.render("Loading...", True, pygame.Color('white'))
+loading_text = font_loading.render("Loading...", True, pygame.color('white'))
 
 s.blit(loading_text, (1920/2 - loading_text.get_width()/2,
 1080/2 - loading_text.get_height()/2))
@@ -31,12 +31,12 @@ while loading:
   else:
     loading = False
 
-  pygame.draw.rect(s, pygame.Color('white'), outline_rect, 2)
-  pygame.draw.rect(s, pygame.Color('white'), filled_rect)
+  pygame.draw.rect(s, pygame.color('white'), outline_rect, 2)
+  pygame.draw.rect(s, pygame.color('white'), filled_rect)
 
   pygame.display.flip()
 
-box_color = (255, 255, 255)  
+box_colour = (255, 255, 255)  
 box_width = 400  
 box_height = 600  
 
@@ -51,7 +51,7 @@ box3_title = "Success Rate"
 
 main_heading = "Your Statistics!"
 main_font = pygame.font.Font("fonts/Dungeon Depths.otf", 50)  
-main_surface = main_font.render(main_heading, True, title_colour)
+main_surface = main_font.render(main_heading, True, title_color)
 main_x = 1920 // 2 - main_surface.get_width() // 2  
 main_y = 50  
 
@@ -63,7 +63,7 @@ class Button:
 
  def draw(self, s, font):
    pygame.draw.rect(s, self.color, self.rect)
-   text_surface = font.render(self.text, True, pygame.Color('white'))
+   text_surface = font.render(self.text, True, pygame.color('white'))
    text_rect = text_surface.get_rect(center=self.rect.center)
    s.blit(text_surface, text_rect)
 
@@ -74,7 +74,7 @@ class Button:
 
 
 exit = Button(1500, 100, 300, 50, 'Return to Mode Selection')
-exit.color = pygame.Color('Black')
+exit.color = pygame.color('Black')
 exit.font = pygame.font.Font(None, 30)
 
 running = True
@@ -95,10 +95,10 @@ while running:
 
   s.blit(bg, (0, 0))
 
-  pygame.draw.rect(s, box_color, (100, 200, box_width, box_height))
-  pygame.draw.rect(s, box_color, (760, 200, box_width, box_height))
-  pygame.draw.rect(s, box_color, (1420, 200, box_width, box_height))
-  text_surface = font.render(box1_title, True, text_colour)
+  pygame.draw.rect(s, box_colour, (100, 200, box_width, box_height))
+  pygame.draw.rect(s, box_colour, (760, 200, box_width, box_height))
+  pygame.draw.rect(s, box_colour, (1420, 200, box_width, box_height))
+  text_surface = font.render(box1_title, True, text_color)
   s.blit(text_surface, (175, 225))
   text_surface = font.render(box2_title, True, text_colour)
   s.blit(text_surface, (790, 225))
