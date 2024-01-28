@@ -126,73 +126,63 @@ main_text = ["",
    "",
    "Mute SFX"]
 
-font = pygame.font.Font(None, 50)
-for i, line in enumerate(main_text):
-  text_surface = font.render(line, True, text_color)
-  text_x = box_x + (box_width - text_surface.get_width()) // 2
-  text_y = title_y + title_surface.get_height() + 10 + i * (font.get_height() + 10)  
-  
-  sliders = []
-  for i, line in enumerate(main_text):
-      if line.strip() != "":  # Only create sliders for non-empty lines
-          slider = Slider(box_x + 20 , title_y + title_surface.get_height() + 100 + i * (font.get_height() + 10), box_width - 40, 20, 0, 100, (0, 0, 0))
-          sliders.append(slider)
+
 
   # Game loop
-  running = True
-  while running:
-      # Fill the screen with the background image
-      s.blit(bg, (0, 0))
+running = True
+while running:
+    # Fill the screen with the background image
+    s.blit(bg, (0, 0))
 
-      # Draw the box
-      pygame.draw.rect(s, box_color, pygame.Rect(box_x, box_y, box_width, box_height))
-      pygame.draw.rect(s, (0,0,0) , pygame.Rect(box_x, 100 , box_width, 5))
-      pygame.draw.rect(s, (0,0,0) , pygame.Rect(box_x, 300 , box_width, 5))
-      pygame.draw.rect(s, (0,0,0) , pygame.Rect(box_x, 500 , box_width, 5))
-      pygame.draw.rect(s, (0,0,0) , pygame.Rect(box_x, 700 , box_width, 5))
-      # Draw the title on the screen
-      s.blit(title_surface, (title_x, title_y))
+    # Draw the box
+    pygame.draw.rect(s, box_color, pygame.Rect(box_x, box_y, box_width, box_height))
+    pygame.draw.rect(s, (0,0,0) , pygame.Rect(box_x, 100 , box_width, 5))
+    pygame.draw.rect(s, (0,0,0) , pygame.Rect(box_x, 300 , box_width, 5))
+    pygame.draw.rect(s, (0,0,0) , pygame.Rect(box_x, 500 , box_width, 5))
+    pygame.draw.rect(s, (0,0,0) , pygame.Rect(box_x, 700 , box_width, 5))
+    # Draw the title on the screen
+    s.blit(title_surface, (title_x, title_y))
 
-      exit_button.draw(s, exit_button.font)
+    exit_button.draw(s, exit_button.font)
 
-      # Draw the text
-      for i, line in enumerate(main_text):
-          text_surface = font.render(line, True, text_color)
-          text_x = box_x + (box_width - text_surface.get_width()) // 2
-          text_y = title_y + title_surface.get_height() + 10 + i * (font.get_height() + 10)  # Below the previous line with a small margin
-          s.blit(text_surface, (text_x, text_y))
+    # Draw the text
+    for i, line in enumerate(main_text):
+        text_surface = font.render(line, True, text_color)
+        text_x = box_x + (box_width - text_surface.get_width()) // 2
+        text_y = title_y + title_surface.get_height() + 10 + i * (font.get_height() + 10)  # Below the previous line with a small margin
+        s.blit(text_surface, (text_x, text_y))
 
-      mute_m.draw(s)
-      mute_sfx.draw(s)
-      slider1.draw(s)
-      slider2.draw(s)
+    mute_m.draw(s)
+    mute_sfx.draw(s)
+    slider1.draw(s)
+    slider2.draw(s)
 
-      for event in pygame.event.get():
-          if event.type == pygame.QUIT:
-              running = False
-          elif event.type == pygame.MOUSEBUTTONDOWN:
-              if exit_button.is_clicked(event.pos):
-                exec(open("menu.py").read())
-          elif event.type == pygame.MOUSEBUTTONUP:  # Handle mouse button release events
-            if mute_m.handle_event(event):
-               if mute_m.clicked:
-                 music_vol = 0
-               else:
-                 music_vol = 100
-            if mute_sfx.handle_event(event):
-               if mute_sfx.clicked:
-                 sfx_vol = 0
-               else:
-                 sfx_vol = 100
-          if mute_m.clicked:
-            slider2.val = slider2.min
-          else:
-            slider2.handle_event(event)
-          if mute_sfx.clicked:
-            slider1.val = slider1.min
-          else:
-            slider1.handle_event(event)
-        
-      pygame.display.flip()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if exit_button.is_clicked(event.pos):
+              exec(open("menu.py").read())
+        elif event.type == pygame.MOUSEBUTTONUP:  # Handle mouse button release events
+          if mute_m.handle_event(event):
+             if mute_m.clicked:
+               music_vol = 0
+             else:
+               music_vol = 100
+          if mute_sfx.handle_event(event):
+             if mute_sfx.clicked:
+               sfx_vol = 0
+             else:
+               sfx_vol = 100
+        if mute_m.clicked:
+          slider2.val = slider2.min
+        else:
+          slider2.handle_event(event)
+        if mute_sfx.clicked:
+          slider1.val = slider1.min
+        else:
+          slider1.handle_event(event)
+      
+    pygame.display.flip()
 
-  pygame.quit()
+pygame.quit()
