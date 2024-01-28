@@ -163,7 +163,7 @@ while running:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if exit_button.is_clicked(event.pos):
               exec(open("menu.py").read())
-        elif event.type == pygame.MOUSEBUTTONUP:  # Handle mouse button release events
+        elif event.type == pygame.MOUSEBUTTONUP:  
           if mute_m.handle_event(event):
              if mute_m.clicked:
                music_vol = 0
