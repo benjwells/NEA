@@ -4,28 +4,30 @@ import math
 import sqlite3
 from login_page import Database
 
-
 # Initialize Pygame
 pygame.init()
-font = pygame.font.Font(None, 30)
-font_loading = pygame.font.Font(None, 50)
 
-screen = pygame.display.set_mode((1920, 1080))
-pygame.display.set_caption("Interactive Game")
+
+
+s_width = 1920
+s_height = 1080
+s = pygame.display.set_mode((s_width, s_height))
 
 bg = pygame.image.load("images/InGameScreen.png")
 bg = pygame.transform.scale(bg, (1920, 1080))
 
-def hash_password(password):
-  return hashlib.sha256(password.encode()).hexdigest()
+font = pygame.font.Font(None, 50)
+loading_text = font.render("Loading...", True, pygame.Color('white'))
 
-loading_text = font_loading.render("Loading...", True, pygame.Color('white'))
+s.blit(loading_text, (s_width/2 - loading_text.get_width()/2,
+s_height/2 - loading_text.get_height()/2))
 
-screen.blit(loading_text, (1920/2 - loading_text.get_width()/2,
-1080/2 - loading_text.get_height()/2))
 
-outline_rect = pygame.Rect(710, 540 + loading_text.get_height(), 500, 50)
-filled_rect = pygame.Rect(710, 540 + loading_text.get_height(), 0, 50)
+b_width, b_height = 500, 50
+rect_top = s_height/2 + loading_text.get_height()
+outline_rect = filled_rect = pygame.Rect(s_width/2 - b_width/2, rect_top, b_width, b_height)
+filled_rect.width = 0
+pygame.draw.rect(s, pygame.Color('white'), outline_rect)
 
 loading = True
 ticks = pygame.time.get_ticks()
@@ -35,16 +37,16 @@ while loading:
       pygame.quit()
 
   if (pygame.time.get_ticks() - ticks) < 3000:
-    filled_rect.width = ((pygame.time.get_ticks() - ticks) / 3000) * 500
+    filled_rect.width = ((pygame.time.get_ticks() - ticks) / 3000) * b_width
   else:
     loading = False
 
-  pygame.draw.rect(screen, pygame.Color('white'), outline_rect, 2)
-  pygame.draw.rect(screen, pygame.Color('white'), filled_rect)
+  pygame.draw.rect(s, pygame.Color('white'), outline_rect, 2)
+  pygame.draw.rect(s, pygame.Color('white'), filled_rect)
 
   pygame.display.flip()
 
-
+font = pygame.font.Font(None, 30)
 box_colour = pygame.Color('white')
 box_margin = 20
 box_width = 200
@@ -149,7 +151,7 @@ o_200, o_60 = 550, 540  # You can adjust these values as needed
 o_box = pygame.Rect(1400, 250, o_200, o_60)  
 o_surface = pygame.Surface((o_200, o_60))  # Create a surface for the output box
 o_surface.fill(o_box_color)  # Fill the surface with the output box color
-screen.blit(o_surface, (o_box.x, o_box.y)) 
+s.blit(o_surface, (o_box.x, o_box.y)) 
 
 
 equations = [
@@ -167,7 +169,10 @@ equations = [
     "Max Height: H = (u^2 * sin^2(theta)) / (2g)",
     "Displacement: s = ut + 0.5at^2",
     "Final Velocity: v = sqrt(u^2 + 2gs)",
-    "Time: t = (v - u) / a",]
+    "Time: t = (v - u) / a",
+    "",
+    "Note: Change the playback speed of the projectile",
+    "by using the up and down arrows on the keyboard."]
 
 start_point = []
 count = 0
@@ -175,11 +180,11 @@ suc_count = 0
 
 equation_surface = [font.render(equation, True, pygame.Color('white')) for equation in equations]
 for i, equation_surface in enumerate(equation_surface):
-    screen.blit(equation_surface, (o_box.x , o_box.y  ))
+    s.blit(equation_surface, (o_box.x , o_box.y  ))
 
 while running:
   delta_t = clock.tick(60) / 1000  
-  screen.blit(bg, (0, 0))
+  s.blit(bg, (0, 0))
 
   # Update the values based on the input texts
   try:
@@ -203,19 +208,19 @@ while running:
   error_angle = font.render("Launch angle must be between 0 and 89", True, pygame.Color('red'))
 
   if gravity < 2 or gravity > 15 or input_text[0] == "":
-    screen.blit(error_grav, (135, 100))
+    s.blit(error_grav, (135, 100))
     proj_running = False
 
   elif target_distance < 200 or target_distance > 1119 or input_text[1] == "":
-    screen.blit(error_target, (50, 220))
+    s.blit(error_target, (50, 220))
     proj_running = False
 
   elif initial_velocity < 30 or initial_velocity > 150 or input_text[2] == "":
-    screen.blit(error_ivel, (450, 100))
+    s.blit(error_ivel, (450, 100))
     proj_running = False
 
   elif launch_angle <= math.radians(0) or launch_angle > math.radians(89) or input_text[3] == "":
-    screen.blit(error_angle, (450, 220))
+    s.blit(error_angle, (450, 220))
     proj_running = False
 
 
@@ -266,28 +271,28 @@ while running:
               if playback_speed < 0.1:  # prevent playback_speed from going too low
                   playback_speed = 0.1
 
-  start_button.draw(screen, font)
-  stop_button.draw(screen, font)
-  exit_button.draw(screen, font)
+  start_button.draw(s, font)
+  stop_button.draw(s, font)
+  exit_button.draw(s, font)
   for i, box in enumerate(input):
-      pygame.draw.rect(screen, box_colour, box)
+      pygame.draw.rect(s, box_colour, box)
       label_surface = font.render(label[i], True, pygame.Color('white'))
-      screen.blit(label_surface, (box.x - label_surface.get_width() - 10, box.y + (60 - label_surface.get_height()) // 2))
+      s.blit(label_surface, (box.x - label_surface.get_width() - 10, box.y + (60 - label_surface.get_height()) // 2))
       text_surface = font.render(input_text[i], True, pygame.Color('black'))
-      screen.blit(text_surface, (box.x + 5, box.y + 5))
+      s.blit(text_surface, (box.x + 5, box.y + 5))
 
   # Draw the output box
-  pygame.draw.rect(screen, o_box_color, o_box)
+  pygame.draw.rect(s, o_box_color, o_box)
 
   # Draw the equations in the output box below the calculations
   for i, equation in enumerate(equations):
       text_surface = font.render(equation, True, pygame.Color('black'))
-      screen.blit(text_surface, (o_box.x , o_box.y + 5 + (len(start_point) + i) * (font.get_height() + 5)))
+      s.blit(text_surface, (o_box.x , o_box.y + 5 + (len(start_point) + i) * (font.get_height() + 5)))
 
 
   # Draw the target line using the updated target distance
   target_x = proj_initial_pos[0] + target_distance  # Calculate the x-coordinate based on the distance from the circle
-  pygame.draw.line(screen, target_color, (target_x, target_y), (target_x + target_width, target_y), 2)
+  pygame.draw.line(s, target_color, (target_x, target_y), (target_x + target_width, target_y), 2)
 
 
   if proj_running and not simulation_paused:
@@ -307,6 +312,7 @@ while running:
       
     
     if proj_pos[1] >= proj_initial_pos[1]:
+        # Check if the projectile passed within the target's x-coordinate range
         if target_x <= proj_pos[0] <= target_x + target_width:
             hit = "Target Hit"
             suc_count += 1
@@ -341,7 +347,7 @@ while running:
       
 
   # Draw the projectile on the screen
-  pygame.draw.circle(screen, projectile_color, (int(proj_pos[0]), int(proj_pos[1])), proj_radius)
+  pygame.draw.circle(s, projectile_color, (int(proj_pos[0]), int(proj_pos[1])), proj_radius)
 
   scientific_output[0] = gravity  # Acceleration is constant and equal to gravity
   scientific_output[1] = math.sqrt(x_pos**2 + y_pos**2)  # Displacement from the start
@@ -351,19 +357,19 @@ while running:
   scientific_output[3] = math.sqrt(velocity_x**2 + velocity_y**2)  # Current velocity
 
   # Draw the output label and values every frame
-  draw_scientific_output(screen, font, output, scientific_output, input, 20, 200, 60)
+  draw_scientific_output(s, font, output, scientific_output, input, 20, 200, 60)
 
   # Draw the hit status message if available
   if hit == "Target Missed":
     message_surface = font.render(hit, True, pygame.Color('red'))
-    screen.blit(message_surface, (1920 // 2 - message_surface.get_width() // 2, 1080 // 2 - message_surface.get_height() // 2))
+    s.blit(message_surface, (1920 // 2 - message_surface.get_width() // 2, 1080 // 2 - message_surface.get_height() // 2))
   elif hit == "Target Hit":
     message_surface1 = font.render(hit, True, pygame.Color('green'))
-    screen.blit(message_surface1, (1920 // 2 - message_surface1.get_width() // 2, 1080 // 2 - message_surface1.get_height() // 2))
+    s.blit(message_surface1, (1920 // 2 - message_surface1.get_width() // 2, 1080 // 2 - message_surface1.get_height() // 2))
 
   # Draw the tracer for the projectile
   if len(projectile_movement) > 1:
-      pygame.draw.lines(screen, projectile_color, False, projectile_movement, 3)
+      pygame.draw.lines(s, projectile_color, False, projectile_movement, 3)
 
 
   pygame.display.flip()
