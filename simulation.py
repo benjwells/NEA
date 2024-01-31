@@ -50,13 +50,12 @@ gravity_values = [3.721, 8.87, 3.7, 24.79, 10.44]
 input_box_color = pygame.Color('white')
 box_width, box_height = 200, 60
 box_spacing = 20
-info_box_width, info_box_height = 480, 250
 
 input = [
-  pygame.Rect(100, 100, box_width, box_height), 
-  pygame.Rect(350, 100, box_width, box_height), 
-  pygame.Rect(600, 100, box_width, box_height), 
-  pygame.Rect(1440, 530, info_box_width, info_box_height)
+  pygame.Rect(100, 100, 480, 250), 
+  pygame.Rect(350, 100, 480, 250), 
+  pygame.Rect(600, 100, 480, 250), 
+  pygame.Rect(1440, 530, 480, 250)
 ]
 
 font = pygame.font.Font(None, 36)
