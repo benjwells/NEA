@@ -4,20 +4,25 @@ import login_page
 
 
 pygame.init()
-
-s = pygame.display.set_mode((1920,1080))
+s_width = 1920
+s_height = 1080
+s = pygame.display.set_mode((s_width, s_height))
 
 bg = pygame.image.load("images/optionsBg.png")
 bg = pygame.transform.scale(bg, (1920, 1080))
 
-font_loading = pygame.font.Font(None, 50)
-loading_text = font_loading.render("Loading...", True, pygame.color('white'))
+font = pygame.font.Font(None, 50)
+loading_text = font.render("Loading...", True, pygame.Color('white'))
 
-s.blit(loading_text, (1920/2 - loading_text.get_width()/2,
-1080/2 - loading_text.get_height()/2))
+s.blit(loading_text, (s_width/2 - loading_text.get_width()/2,
+s_height/2 - loading_text.get_height()/2))
 
-outline_rect = pygame.Rect(710, 540 + loading_text.get_height(), 500, 50)
-filled_rect = pygame.Rect(710, 540 + loading_text.get_height(), 0, 50)
+
+b_width, b_height = 500, 50
+rect_top = s_height/2 + loading_text.get_height()
+outline_rect = filled_rect = pygame.Rect(s_width/2 - b_width/2, rect_top, b_width, b_height)
+filled_rect.width = 0
+pygame.draw.rect(s, pygame.Color('white'), outline_rect)
 
 loading = True
 ticks = pygame.time.get_ticks()
@@ -27,16 +32,16 @@ while loading:
       pygame.quit()
 
   if (pygame.time.get_ticks() - ticks) < 3000:
-    filled_rect.width = ((pygame.time.get_ticks() - ticks) / 3000) * 500
+    filled_rect.width = ((pygame.time.get_ticks() - ticks) / 3000) * b_width
   else:
     loading = False
 
-  pygame.draw.rect(s, pygame.color('white'), outline_rect, 2)
-  pygame.draw.rect(s, pygame.color('white'), filled_rect)
+  pygame.draw.rect(s, pygame.Color('white'), outline_rect, 2)
+  pygame.draw.rect(s, pygame.Color('white'), filled_rect)
 
   pygame.display.flip()
 
-box_colour = (255, 255, 255)  
+box_color = (255, 255, 255)  
 box_width = 400  
 box_height = 600  
 
@@ -51,7 +56,7 @@ box3_title = "Success Rate"
 
 main_heading = "Your Statistics!"
 main_font = pygame.font.Font("fonts/Dungeon Depths.otf", 50)  
-main_surface = main_font.render(main_heading, True, title_color)
+main_surface = main_font.render(main_heading, True, title_colour)
 main_x = 1920 // 2 - main_surface.get_width() // 2  
 main_y = 50  
 
@@ -63,7 +68,7 @@ class Button:
 
  def draw(self, s, font):
    pygame.draw.rect(s, self.color, self.rect)
-   text_surface = font.render(self.text, True, pygame.color('white'))
+   text_surface = font.render(self.text, True, pygame.Color('white'))
    text_rect = text_surface.get_rect(center=self.rect.center)
    s.blit(text_surface, text_rect)
 
@@ -74,31 +79,28 @@ class Button:
 
 
 exit = Button(1500, 100, 300, 50, 'Return to Mode Selection')
-exit.color = pygame.color('Black')
+exit.color = pygame.Color('Black')
 exit.font = pygame.font.Font(None, 30)
 
 running = True
 
-
 conn = sqlite3.connect('user_accounts.db')
 curs = conn.cursor()
-
-curs.execute('''SELECT * FROM accounts WHERE username=?''', texts[0])
+print(texts[0])
+curs.execute('''SELECT * FROM accounts WHERE username=?''',(texts[0],))
 record = curs.fetchall()
 record = record[0]
 conn.commit()
 conn.close()
 
-
-
 while running:
-
+  
   s.blit(bg, (0, 0))
 
-  pygame.draw.rect(s, box_colour, (100, 200, box_width, box_height))
-  pygame.draw.rect(s, box_colour, (760, 200, box_width, box_height))
-  pygame.draw.rect(s, box_colour, (1420, 200, box_width, box_height))
-  text_surface = font.render(box1_title, True, text_color)
+  pygame.draw.rect(s, box_color, (100, 200, box_width, box_height))
+  pygame.draw.rect(s, box_color, (760, 200, box_width, box_height))
+  pygame.draw.rect(s, box_color, (1420, 200, box_width, box_height))
+  text_surface = font.render(box1_title, True, text_colour)
   s.blit(text_surface, (175, 225))
   text_surface = font.render(box2_title, True, text_colour)
   s.blit(text_surface, (790, 225))
