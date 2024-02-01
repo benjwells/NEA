@@ -234,12 +234,13 @@ stop_button.color = pygame.Color('red')
 exit_button.color = pygame.Color('Black')
 
 #a list of instances of tickboxes created from the tickbox class
-tickboxes = [TickBox(1500, 380, 30, 20),
-             TickBox(1500, 430, 30, 20),
-             TickBox(1500, 480, 30, 20),
-             TickBox(1500, 530, 30, 20),
-             TickBox(1500, 580, 30, 20),
-             TickBox(1550, 630, 30, 20)]
+tickboxes = [
+TickBox(1500, 380, 30, 20),
+TickBox(1500, 430, 30, 20),
+TickBox(1500, 480, 30, 20),
+TickBox(1500, 530, 30, 20),
+TickBox(1500, 580, 30, 20),
+TickBox(1550, 630, 30, 20)]
 
 #variable that stores whether the simulation is paused
 simulation_paused = False
@@ -286,25 +287,25 @@ screen.blit(o_surface, (o_box.x, o_box.y))
 
 #the text that is drawn into the big output box
 simulations = [
-  "Projectile Motion",
-  "",
-  "Below are options for projectile motion on different",
-  "planets:",
-  "",
-  "Mars",
-  "",
-  "Venus",
-  "",
-  "Mercury",
-  "",
-  "Jupiter",
-  "",
-  "Saturn",
-  "",
-  "Air Resistance",
-  "",
-  "Note: Change the playback speed of the projectile",
-  "by using the up and down arrows on the keyboard."]
+"Projectile Motion",
+"",
+"Below are options for projectile motion on different",
+"planets:",
+"",
+"Mars",
+"",
+"Venus",
+"",
+"Mercury",
+"",
+"Jupiter",
+"",
+"Saturn",
+"",
+"Air Resistance",
+"",
+"Note: Change the playback speed of the projectile",
+"by using the up and down arrows on the keyboard."]
 
 #starting position of the text 
 start_point = [] 
