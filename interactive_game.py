@@ -36,7 +36,7 @@ b_width, b_height = 500, 50
 rect_top = s_height/2 + loading_text.get_height()
 #sets the outline of the loading bar
 outline_rect = filled_rect = pygame.Rect(s_width/2 - b_width/2, rect_top, b_width, b_height)
-#sets the width of the loading ba
+#sets the width of the loading bar
 filled_rect.width = 0
 
 #sets the loading to true
