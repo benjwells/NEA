@@ -275,7 +275,7 @@ y_pos = 0
 
 #sets the colour of the output boxes
 o_box_color = pygame.Color('white')
-#sets the dimensions and position of the output boxes 
+#sets the dimensions and position of the output box
 o_box = pygame.Rect(1400, 250, 550, 540)  
 #sets the dimensions of the text
 o_surface = pygame.Surface((550, 540))
