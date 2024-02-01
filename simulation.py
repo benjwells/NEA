@@ -17,7 +17,7 @@ pygame.display.set_caption("Simulation")
 bg_image_path = "images/InGameScreen.png" 
 #loads background image
 bg = pygame.image.load(bg_image_path) 
-#scales the backgrouund to dimensions
+#scales the background to dimensions
 bg = pygame.transform.scale(bg, (s_width, s_height)) 
 
 # sets the font of loading bar
