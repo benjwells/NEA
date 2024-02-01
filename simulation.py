@@ -320,7 +320,7 @@ for i, simulation_surface in enumerate(simulation_surface):
 
 #main game loop
 while running:
-  #converts time to seconds
+  #a variable that records 1000 updates per 60 frames
   delta_t = clock.tick(60) / 1000 
   #draws the background image on screen
   screen.blit(bg, (0, 0)) 
