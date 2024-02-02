@@ -293,7 +293,7 @@ while True:
         if event.key == pygame.K_BACKSPACE:
           texts[active_box] = texts[active_box][:-1] 
           #checks if the characters in the active box are more than 0
-          if active_box > 0
+          if active_box > 0:
             #if they are, it removes the last character from the active box
             passwords[active_box - 1] = passwords[active_box - 1][:-1] 
         #if any other key is pressed, it will be added to the active box
